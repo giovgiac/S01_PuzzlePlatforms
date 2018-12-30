@@ -19,6 +19,9 @@ public:
 
 	virtual void Init() override;
 
+	UFUNCTION(BlueprintCallable, Category=Menu)
+	void LoadMenu();
+
 	UFUNCTION(Exec)
 	void Host();
 
