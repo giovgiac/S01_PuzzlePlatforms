@@ -26,7 +26,7 @@ void UPuzzlePlatformsGameInstance::Host()
 	UWorld* World = GetWorld();
 	if (!ensure(World)) return;
 
-	World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
+	World->ServerTravel("/Game/Maps/Puzzle?listen");
 }
 
 void UPuzzlePlatformsGameInstance::Join(const FString& Address)
