@@ -4,6 +4,7 @@
 
 // Engine Includes
 #include "Button.h"
+#include "WidgetSwitcher.h"
 
 void UMainMenu::SetMenuInterface(IMenuInterface* Interface)
 {
@@ -32,8 +33,17 @@ bool UMainMenu::Initialize()
 {
 	if (!Super::Initialize()) return false;
 
-	if (!ensure(HostButton != nullptr)) return false;
-	HostButton->OnClicked.AddDynamic(this, &UMainMenu::OnHostClicked);
+	if (!ensure(HostMainMenuButton != nullptr)) return false;
+	HostMainMenuButton->OnClicked.AddDynamic(this, &UMainMenu::OnHostMainMenuClicked);
+
+	if (!ensure(JoinMainMenuButton != nullptr)) return false;
+	JoinMainMenuButton->OnClicked.AddDynamic(this, &UMainMenu::OnJoinMainMenuClicked);
+
+	if (!ensure(CancelJoinMenuButton != nullptr)) return false;
+	CancelJoinMenuButton->OnClicked.AddDynamic(this, &UMainMenu::OnCancelJoinMenuClicked);
+
+	if (!ensure(JoinJoinMenuButton != nullptr)) return false;
+	JoinJoinMenuButton->OnClicked.AddDynamic(this, &UMainMenu::OnJoinJoinMenuClicked);
 
 	return true;
 }
@@ -54,8 +64,29 @@ void UMainMenu::OnLevelRemovedFromWorld(ULevel * InLevel, UWorld * InWorld)
 	RemoveFromViewport();
 }
 
-void UMainMenu::OnHostClicked()
+void UMainMenu::OnHostMainMenuClicked()
 {
 	if (!ensure(MenuInterface != nullptr)) return;
 	MenuInterface->Host();
 }
+
+void UMainMenu::OnJoinMainMenuClicked()
+{
+	if (!ensure(MenuSwitcher != nullptr)) return;
+	if (!ensure(JoinMenu != nullptr)) return;
+	MenuSwitcher->SetActiveWidget(JoinMenu);
+}
+
+void UMainMenu::OnCancelJoinMenuClicked()
+{
+	if (!ensure(MenuSwitcher != nullptr)) return;
+	if (!ensure(MainMenu != nullptr)) return;
+	MenuSwitcher->SetActiveWidget(MainMenu);
+}
+
+void UMainMenu::OnJoinJoinMenuClicked()
+{
+
+}
+
+
