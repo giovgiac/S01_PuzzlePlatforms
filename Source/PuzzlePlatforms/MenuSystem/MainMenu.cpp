@@ -10,6 +10,24 @@ void UMainMenu::SetMenuInterface(IMenuInterface* Interface)
 	MenuInterface = Interface;
 }
 
+void UMainMenu::Setup()
+{
+	UWorld* World = GetWorld();
+	if (!ensure(World != nullptr)) return;
+
+	APlayerController* PlayerController = World->GetFirstPlayerController();
+	if (!ensure(PlayerController != nullptr)) return;
+
+	FInputModeUIOnly InputModeData;
+	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	InputModeData.SetWidgetToFocus(TakeWidget());
+
+	PlayerController->bShowMouseCursor = true;
+	PlayerController->SetInputMode(InputModeData);
+
+	AddToViewport();
+}
+
 bool UMainMenu::Initialize()
 {
 	if (!Super::Initialize()) return false;
@@ -18,6 +36,22 @@ bool UMainMenu::Initialize()
 	HostButton->OnClicked.AddDynamic(this, &UMainMenu::OnHostClicked);
 
 	return true;
+}
+
+// ALTERNATIVE: Use a Teardown method and call it from the GameInstance
+void UMainMenu::OnLevelRemovedFromWorld(ULevel * InLevel, UWorld * InWorld)
+{
+	UWorld* World = GetWorld();
+	if (!ensure(World != nullptr)) return;
+
+	APlayerController* PlayerController = World->GetFirstPlayerController();
+	if (!ensure(PlayerController != nullptr)) return;
+
+	FInputModeGameOnly InputModeData;
+	PlayerController->bShowMouseCursor = false;
+	PlayerController->SetInputMode(InputModeData);
+
+	RemoveFromViewport();
 }
 
 void UMainMenu::OnHostClicked()
