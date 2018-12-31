@@ -5,11 +5,16 @@
 // Engine Includes
 #include "Button.h"
 
+void UMainMenu::SetMenuInterface(IMenuInterface* Interface)
+{
+	MenuInterface = Interface;
+}
+
 bool UMainMenu::Initialize()
 {
 	if (!Super::Initialize()) return false;
 
-	if (!ensure(HostButton)) return false;
+	if (!ensure(HostButton != nullptr)) return false;
 	HostButton->OnClicked.AddDynamic(this, &UMainMenu::OnHostClicked);
 
 	return true;
@@ -17,5 +22,6 @@ bool UMainMenu::Initialize()
 
 void UMainMenu::OnHostClicked()
 {
-	UE_LOG(LogTemp, Warning, TEXT("I'm gonna host a server!"));
+	if (!ensure(MenuInterface != nullptr)) return;
+	MenuInterface->Host();
 }

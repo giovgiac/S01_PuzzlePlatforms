@@ -9,12 +9,13 @@
 #include "UObject/ConstructorHelpers.h"
 
 // Project Includes
+#include "MenuSystem/MainMenu.h"
 #include "PlatformTrigger.h"
 
 UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance(const FObjectInitializer& ObjectInitializer)
 {
 	static ConstructorHelpers::FClassFinder<UUserWidget> MenuBPClass(TEXT("/Game/MenuSystem/WBP_MainMenu"));
-	if (!ensure(MenuBPClass.Class)) return;
+	if (!ensure(MenuBPClass.Class != nullptr)) return;
 
 	MenuClass = MenuBPClass.Class;
 }
@@ -26,15 +27,15 @@ void UPuzzlePlatformsGameInstance::Init()
 
 void UPuzzlePlatformsGameInstance::LoadMenu()
 {
-	if (!ensure(MenuClass)) return;
+	if (!ensure(MenuClass != nullptr)) return;
 
-	UUserWidget* Menu = CreateWidget<UUserWidget>(this, MenuClass);
-	if (!ensure(Menu)) return;
+	UMainMenu* Menu = CreateWidget<UMainMenu>(this, MenuClass);
+	if (!ensure(Menu != nullptr)) return;
 
 	Menu->AddToViewport();
 
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
-	if (!ensure(PlayerController)) return;
+	if (!ensure(PlayerController != nullptr)) return;
 
 	FInputModeUIOnly InputModeData;
 	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
@@ -42,17 +43,19 @@ void UPuzzlePlatformsGameInstance::LoadMenu()
 
 	PlayerController->bShowMouseCursor = true;
 	PlayerController->SetInputMode(InputModeData);
+
+	Menu->SetMenuInterface(this);
 }
 
 void UPuzzlePlatformsGameInstance::Host()
 {
 	UEngine* Engine = GetEngine();
-	if (!ensure(Engine)) return;
+	if (!ensure(Engine != nullptr)) return;
 
 	Engine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, TEXT("Hosting"));
 
 	UWorld* World = GetWorld();
-	if (!ensure(World)) return;
+	if (!ensure(World != nullptr)) return;
 
 	World->ServerTravel("/Game/Maps/Puzzle?listen");
 }
@@ -60,12 +63,12 @@ void UPuzzlePlatformsGameInstance::Host()
 void UPuzzlePlatformsGameInstance::Join(const FString& Address)
 {
 	UEngine* Engine = GetEngine();
-	if (!ensure(Engine)) return;
+	if (!ensure(Engine != nullptr)) return;
 	
 	Engine->AddOnScreenDebugMessage(0, 5.f, FColor::Green, FString::Printf(TEXT("Joining %s"), *Address));
 
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
-	if (!ensure(PlayerController)) return;
+	if (!ensure(PlayerController != nullptr)) return;
 
 	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 }
