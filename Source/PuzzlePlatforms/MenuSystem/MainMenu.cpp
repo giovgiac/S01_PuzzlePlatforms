@@ -2,32 +2,13 @@
 
 #include "MainMenu.h"
 
+// Project Includes
+#include "MenuInterface.h"
+
 // Engine Includes
 #include "Button.h"
+#include "EditableTextBox.h"
 #include "WidgetSwitcher.h"
-
-void UMainMenu::SetMenuInterface(IMenuInterface* Interface)
-{
-	MenuInterface = Interface;
-}
-
-void UMainMenu::Setup()
-{
-	UWorld* World = GetWorld();
-	if (!ensure(World != nullptr)) return;
-
-	APlayerController* PlayerController = World->GetFirstPlayerController();
-	if (!ensure(PlayerController != nullptr)) return;
-
-	FInputModeUIOnly InputModeData;
-	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-	InputModeData.SetWidgetToFocus(TakeWidget());
-
-	PlayerController->bShowMouseCursor = true;
-	PlayerController->SetInputMode(InputModeData);
-
-	AddToViewport();
-}
 
 bool UMainMenu::Initialize()
 {
@@ -42,26 +23,10 @@ bool UMainMenu::Initialize()
 	if (!ensure(CancelJoinMenuButton != nullptr)) return false;
 	CancelJoinMenuButton->OnClicked.AddDynamic(this, &UMainMenu::OnCancelJoinMenuClicked);
 
-	if (!ensure(JoinJoinMenuButton != nullptr)) return false;
-	JoinJoinMenuButton->OnClicked.AddDynamic(this, &UMainMenu::OnJoinJoinMenuClicked);
+	if (!ensure(ConfirmJoinMenuButton != nullptr)) return false;
+	ConfirmJoinMenuButton->OnClicked.AddDynamic(this, &UMainMenu::OnConfirmJoinMenuClicked);
 
 	return true;
-}
-
-// ALTERNATIVE: Use a Teardown method and call it from the GameInstance
-void UMainMenu::OnLevelRemovedFromWorld(ULevel * InLevel, UWorld * InWorld)
-{
-	UWorld* World = GetWorld();
-	if (!ensure(World != nullptr)) return;
-
-	APlayerController* PlayerController = World->GetFirstPlayerController();
-	if (!ensure(PlayerController != nullptr)) return;
-
-	FInputModeGameOnly InputModeData;
-	PlayerController->bShowMouseCursor = false;
-	PlayerController->SetInputMode(InputModeData);
-
-	RemoveFromViewport();
 }
 
 void UMainMenu::OnHostMainMenuClicked()
@@ -84,9 +49,11 @@ void UMainMenu::OnCancelJoinMenuClicked()
 	MenuSwitcher->SetActiveWidget(MainMenu);
 }
 
-void UMainMenu::OnJoinJoinMenuClicked()
+void UMainMenu::OnConfirmJoinMenuClicked()
 {
+	if (!ensure(MenuInterface != nullptr)) return;
+	if (!ensure(IPAddressField != nullptr)) return;
 
+	const FString& Address = IPAddressField->GetText().ToString();
+	MenuInterface->Join(Address);
 }
-
-

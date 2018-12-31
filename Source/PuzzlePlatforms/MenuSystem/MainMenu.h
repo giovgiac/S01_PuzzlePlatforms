@@ -2,26 +2,23 @@
 
 #pragma once
 
+// Project Includes
+#include "MenuWidget.h"
+
+// Engine Includes
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "MenuInterface.h"
 #include "MainMenu.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PUZZLEPLATFORMS_API UMainMenu : public UUserWidget
+class PUZZLEPLATFORMS_API UMainMenu : public UMenuWidget
 {
 	GENERATED_BODY()
 
-public:
-	void SetMenuInterface(IMenuInterface* Interface);
-	void Setup();
-
 protected:
 	virtual bool Initialize() override;
-	virtual void OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) override;
 
 private:
 	UPROPERTY(meta=(BindWidget))
@@ -43,9 +40,10 @@ private:
 	class UButton* CancelJoinMenuButton;
 
 	UPROPERTY(meta=(BindWidget))
-	class UButton* JoinJoinMenuButton;
+	class UButton* ConfirmJoinMenuButton;
 
-	IMenuInterface* MenuInterface;
+	UPROPERTY(meta=(BindWidget))
+	class UEditableTextBox* IPAddressField;
 
 private:
 	UFUNCTION()
@@ -58,6 +56,6 @@ private:
 	void OnCancelJoinMenuClicked();
 
 	UFUNCTION()
-	void OnJoinJoinMenuClicked();
+	void OnConfirmJoinMenuClicked();
 
 };
