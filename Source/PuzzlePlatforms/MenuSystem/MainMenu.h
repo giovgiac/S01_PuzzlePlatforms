@@ -34,6 +34,9 @@ private:
 	class UButton* JoinMainMenuButton;
 
 	UPROPERTY(meta=(BindWidget))
+	class UButton* QuitButton;
+
+	UPROPERTY(meta=(BindWidget))
 	class UWidget* JoinMenu;
 
 	UPROPERTY(meta=(BindWidget))
@@ -51,6 +54,9 @@ private:
 
 	UFUNCTION()
 	void OnJoinMainMenuClicked();
+
+	UFUNCTION()
+	void OnQuit();
 
 	UFUNCTION()
 	void OnCancelJoinMenuClicked();

@@ -38,7 +38,7 @@ void UPuzzlePlatformsGameInstance::LoadMenu()
 
 	Menu = CreateWidget<UMenuWidget>(this, MenuClass);
 	if (!ensure(Menu != nullptr)) return;
-
+	
 	Menu->Setup();
 	Menu->SetMenuInterface(this);
 }
