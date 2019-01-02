@@ -2,9 +2,13 @@
 
 #pragma once
 
+// Project Includes
+#include "MenuSystem/MenuInterface.h"
+
+// Engine Includes
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "MenuSystem/MenuInterface.h"
+#include "OnlineSubsystem.h"
 #include "PuzzlePlatformsGameInstance.generated.h"
 
 /**
@@ -36,4 +40,14 @@ private:
 
 	class UMenuWidget* Menu;
 	class UMenuWidget* InGameMenu;
+
+	IOnlineSessionPtr SessionInterface;
+	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
+
+private:
+	void CreateSession();
+
+	void OnCreateSessionComplete(FName SessionName, bool bSuccess);
+	void OnDestroySessionComplete(FName SessionName, bool bSuccess);
+	void OnFindSessionsComplete(bool bSuccess);
 };
