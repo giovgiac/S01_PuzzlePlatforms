@@ -21,7 +21,7 @@ public:
 	virtual void Init() override;
 
 	UFUNCTION(BlueprintCallable, Category=Menu)
-	void LoadMenu();
+	void LoadMainMenu();
 
 	UFUNCTION(BlueprintCallable, Category=Menu)
 	void LoadInGameMenu();
