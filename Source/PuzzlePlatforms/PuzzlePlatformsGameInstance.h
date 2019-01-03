@@ -33,12 +33,13 @@ public:
 	virtual void Host() override;
 	virtual void Join(const FString& Address) override;
 	virtual void QuitToMenu() override;
+	virtual void RefreshServerList() override;
 
 private:
 	TSubclassOf<class UMenuWidget> MenuClass;
 	TSubclassOf<class UMenuWidget> InGameMenuClass;
 
-	class UMenuWidget* Menu;
+	class UMainMenu* Menu;
 	class UMenuWidget* InGameMenu;
 
 	IOnlineSessionPtr SessionInterface;

@@ -4,12 +4,37 @@
 
 // Project Includes
 #include "MenuInterface.h"
+#include "ServerRow.h"
 
 // Engine Includes
 #include "Button.h"
-#include "EditableTextBox.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "PanelWidget.h"
+#include "TextBlock.h"
+#include "UObject/ConstructorHelpers.h"
 #include "WidgetSwitcher.h"
+
+UMainMenu::UMainMenu(const FObjectInitializer& ObjectInitializer)
+{
+	static ConstructorHelpers::FClassFinder<UServerRow> ServerRowBPClass(TEXT("/Game/MenuSystem/WBP_ServerRow"));
+	if (!ensure(ServerRowBPClass.Class != nullptr)) return;
+
+	ServerRowClass = ServerRowBPClass.Class;
+}
+
+void UMainMenu::SetServerList(TArray<FString> ServerNames)
+{
+	ServerList->ClearChildren();
+
+	for (auto& Name : ServerNames)
+	{
+		UServerRow* Row = CreateWidget<UServerRow>(this, ServerRowClass);
+		if (!ensure(Row != nullptr)) return;
+
+		Row->ServerName->SetText(FText::FromString(Name));
+		ServerList->AddChild(Row);
+	}
+}
 
 bool UMainMenu::Initialize()
 {
@@ -41,9 +66,11 @@ void UMainMenu::OnHostMainMenuClicked()
 
 void UMainMenu::OnJoinMainMenuClicked()
 {
+	if (!ensure(MenuInterface != nullptr)) return;
 	if (!ensure(MenuSwitcher != nullptr)) return;
 	if (!ensure(JoinMenu != nullptr)) return;
 	MenuSwitcher->SetActiveWidget(JoinMenu);
+	MenuInterface->RefreshServerList();
 }
 
 void UMainMenu::OnQuit()
@@ -75,8 +102,7 @@ void UMainMenu::OnCancelJoinMenuClicked()
 void UMainMenu::OnConfirmJoinMenuClicked()
 {
 	if (!ensure(MenuInterface != nullptr)) return;
-	if (!ensure(IPAddressField != nullptr)) return;
+	if (!ensure(ServerList != nullptr)) return;
 
-	const FString& Address = IPAddressField->GetText().ToString();
-	MenuInterface->Join(Address);
+	MenuInterface->Join("");
 }
