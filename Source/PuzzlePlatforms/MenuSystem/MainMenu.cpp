@@ -25,15 +25,23 @@ UMainMenu::UMainMenu(const FObjectInitializer& ObjectInitializer)
 void UMainMenu::SetServerList(TArray<FString> ServerNames)
 {
 	ServerList->ClearChildren();
-
+	
+	uint32 Index = 0;
 	for (auto& Name : ServerNames)
 	{
 		UServerRow* Row = CreateWidget<UServerRow>(this, ServerRowClass);
 		if (!ensure(Row != nullptr)) return;
 
 		Row->ServerName->SetText(FText::FromString(Name));
+		Row->Setup(this, Index++);
+
 		ServerList->AddChild(Row);
 	}
+}
+
+void UMainMenu::SelectIndex(uint32 Index)
+{
+	SelectedIndex = Index;
 }
 
 bool UMainMenu::Initialize()
@@ -104,5 +112,13 @@ void UMainMenu::OnConfirmJoinMenuClicked()
 	if (!ensure(MenuInterface != nullptr)) return;
 	if (!ensure(ServerList != nullptr)) return;
 
-	MenuInterface->Join("");
+	if (SelectedIndex.IsSet())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Selected Index %d"), SelectedIndex.GetValue());
+		MenuInterface->Join(SelectedIndex.GetValue());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Selected Index Not Set"));
+	}
 }

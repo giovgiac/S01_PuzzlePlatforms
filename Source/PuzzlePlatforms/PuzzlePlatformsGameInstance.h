@@ -8,6 +8,7 @@
 // Engine Includes
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "OnlineSessionInterface.h"
 #include "OnlineSubsystem.h"
 #include "PuzzlePlatformsGameInstance.generated.h"
 
@@ -31,7 +32,7 @@ public:
 	void LoadInGameMenu();
 
 	virtual void Host() override;
-	virtual void Join(const FString& Address) override;
+	virtual void Join(uint32 Index) override;
 	virtual void QuitToMenu() override;
 	virtual void RefreshServerList() override;
 
@@ -51,4 +52,5 @@ private:
 	void OnCreateSessionComplete(FName SessionName, bool bSuccess);
 	void OnDestroySessionComplete(FName SessionName, bool bSuccess);
 	void OnFindSessionsComplete(bool bSuccess);
+	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 };
