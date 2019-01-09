@@ -72,6 +72,9 @@ private:
 	void OnConfirmJoinMenuClicked();
 
 private:
+	void UpdateChildren();
+
+private:
 	TSubclassOf<class UServerRow> ServerRowClass;
 
 	TOptional<uint32> SelectedIndex;

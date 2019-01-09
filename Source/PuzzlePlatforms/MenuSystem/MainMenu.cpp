@@ -42,6 +42,7 @@ void UMainMenu::SetServerList(TArray<FString> ServerNames)
 void UMainMenu::SelectIndex(uint32 Index)
 {
 	SelectedIndex = Index;
+	UpdateChildren();
 }
 
 bool UMainMenu::Initialize()
@@ -120,5 +121,17 @@ void UMainMenu::OnConfirmJoinMenuClicked()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Selected Index Not Set"));
+	}
+}
+
+void UMainMenu::UpdateChildren()
+{
+	for (int32 i = 0; i < ServerList->GetChildrenCount(); ++i)
+	{
+		auto Row = Cast<UServerRow>(ServerList->GetChildAt(i));
+		if (Row != nullptr)
+		{
+			Row->bSelected = SelectedIndex.IsSet() && SelectedIndex.GetValue() == i;
+		}
 	}
 }
